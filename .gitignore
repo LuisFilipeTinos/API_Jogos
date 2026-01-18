@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Environment variables
+.env
+.env.development
+.env.production
+
+# TypeScript cache
+.tsbuildinfo
+
+# Build artifacts
+dist/
+build/
+
+# Log files
+*.log
+npm-debug.log*
+
+# Editor/OS specific files (optional, but recommended)
+.vscode/
+.idea/
+.DS_Store
