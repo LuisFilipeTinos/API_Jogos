@@ -19,6 +19,10 @@ app.use('/api/jogos', jogosRoutes);
 const options = {
     definition: {
         openapi: '3.0.0',
+        info: {
+            title: 'API Coleção de Jogos',
+            vesion: '0.1'
+        },
         servers: [
             {
                 url: 'https://api-jogos-wq4x.onrender.com',
@@ -29,7 +33,7 @@ const options = {
 }
 
 const swagger = swaggerJsdoc(options);
-app.use('/api-docs', 
+app.use('/api/docs', 
     swaggerUiExpress.serve,
     swaggerUiExpress.setup(swagger)
 )
