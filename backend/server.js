@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { database } from './config/db.js';
 import jogosRoutes from "./routes/jogosRoutes.js";
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 dotenv.config();
 
@@ -12,7 +14,25 @@ const port = process.env.PORT;
 app.use(express.json());
 
 //Definição do meu prefixo de rota:
-app.use("/api/jogos", jogosRoutes);
+app.use('/api/jogos', jogosRoutes);
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        servers: [
+            {
+                url: 'https://api-jogos-wq4x.onrender.com',
+            }
+        ],
+    },
+    apis: ['./routes/*.js']
+}
+
+const swagger = swaggerJsdoc(options);
+app.use('/api-docs', 
+    swaggerUiExpress.serve,
+    swaggerUiExpress.setup(swagger)
+)
 
 //Teste de conexão com o banco:
 async function testDbConnection() {
