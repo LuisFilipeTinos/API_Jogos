@@ -38,7 +38,7 @@
  *           application/json:
  *             schema:
  *               type: array
- * /api/jogos/id/{id}:
+ * /api/jogos/id/{usuarioId}:
  *   get:
  *     summary: Recupera o jogo a partir do ID
  *     tags: [Jogos]
