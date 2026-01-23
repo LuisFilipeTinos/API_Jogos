@@ -44,7 +44,7 @@
  *     tags: [Jogos]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: usuarioId
  *         schema:
  *           type: integer
  *         required: true
