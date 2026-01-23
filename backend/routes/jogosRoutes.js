@@ -38,6 +38,7 @@
  *           application/json:
  *             schema:
  *               type: array
+ *               $ref: '#/components/schemas/Jogos'
  * /api/jogos/id/{usuarioId}:
  *   get:
  *     summary: Recupera o jogo a partir do ID
@@ -54,6 +55,8 @@
  *         description: A resposta do jogo por ID
  *         content:
  *           application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Jogos'    
  *       404:
  *         description: O jogo não foi encontrado
  * /api/jogos/categoria/{categoria}:
@@ -72,6 +75,8 @@
  *         description: A resposta do jogo por categoria
  *         content:
  *           application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Jogos'  
  *       404:
  *         description: O jogo não foi encontrado
  */
