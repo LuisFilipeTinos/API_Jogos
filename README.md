@@ -4,6 +4,8 @@ Este repositório foi criado para consumo, dentro e fora das aulas, de uma API d
 
 ## Endereço base da documentação da API (Swagger): 
 
-ˋˋˋ
-  https://api-jogos-wq4x.onrender.com/api/docs
-ˋˋˋ
+```
+https://api-jogos-wq4x.onrender.com/api/docs
+```
+
+
