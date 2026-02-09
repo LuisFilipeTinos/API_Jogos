@@ -45,25 +45,64 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
 
-// Chat simples (broadcast)
+// Chat simples
 wss.on('connection', (ws) => {
-  console.log('Cliente conectado ao chat');
+  console.log('Novo cliente conectado');
+
+  ws.username = 'Anônimo';
 
   ws.on('message', (data) => {
-    console.log('Mensagem recebida:', data.toString());
+    const msg = JSON.parse(data.toString());
 
-    // Envia para todos os clientes conectados
-    wss.clients.forEach((client) => {
-      if (client.readyState === ws.OPEN) {
-        client.send(data.toString());
-      }
-    });
+    // Mensagem de identificação
+    if (msg.type === 'join') {
+      ws.username = msg.username;
+
+      // Aviso para todos
+      wss.clients.forEach((client) => {
+        if (client.readyState === ws.OPEN) {
+          client.send(
+            JSON.stringify({
+              type: 'system',
+              text: `${ws.username} entrou no chat`
+            })
+          );
+        }
+      });
+
+      return;
+    }
+
+    // Mensagem normal de chat
+    if (msg.type === 'chat') {
+      wss.clients.forEach((client) => {
+        if (client.readyState === ws.OPEN) {
+          client.send(
+            JSON.stringify({
+              type: 'chat',
+              username: ws.username,
+              text: msg.text
+            })
+          );
+        }
+      });
+    }
   });
 
   ws.on('close', () => {
-    console.log('Cliente desconectado');
+    wss.clients.forEach((client) => {
+      if (client.readyState === ws.OPEN) {
+        client.send(
+          JSON.stringify({
+            type: 'system',
+            text: `${ws.username} saiu do chat`
+          })
+        );
+      }
+    });
   });
 });
+
 
 //Teste de conexão com o banco:
 async function testDbConnection() {
