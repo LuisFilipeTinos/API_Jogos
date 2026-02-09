@@ -5,6 +5,9 @@ import jogosRoutes from "./routes/jogosRoutes.js";
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+
 dotenv.config();
 
 const app = express();
@@ -38,6 +41,30 @@ app.use('/api/docs',
     swaggerUiExpress.setup(swagger)
 )
 
+const server = createServer(app);
+const wss = new WebSocketServer({ server });
+
+
+// Chat simples (broadcast)
+wss.on('connection', (ws) => {
+  console.log('Cliente conectado ao chat');
+
+  ws.on('message', (data) => {
+    console.log('Mensagem recebida:', data.toString());
+
+    // Envia para todos os clientes conectados
+    wss.clients.forEach((client) => {
+      if (client.readyState === ws.OPEN) {
+        client.send(data.toString());
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('Cliente desconectado');
+  });
+});
+
 //Teste de conexão com o banco:
 async function testDbConnection() {
     try {
@@ -55,7 +82,7 @@ async function testDbConnection() {
 }
 
 testDbConnection().then(() => {
-    app.listen(port, () => {
+    server.listen(port, () => {
         console.log('Servidor rodando na porta: ', port);
     });
 });
