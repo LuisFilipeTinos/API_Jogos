@@ -5,9 +5,6 @@ import jogosRoutes from "./routes/jogosRoutes.js";
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-
 dotenv.config();
 
 const app = express();
@@ -41,69 +38,6 @@ app.use('/api/docs',
     swaggerUiExpress.setup(swagger)
 )
 
-const server = createServer(app);
-const wss = new WebSocketServer({ server });
-
-
-// Chat simples
-wss.on('connection', (ws) => {
-  console.log('Novo cliente conectado');
-
-  ws.username = 'Anônimo';
-
-  ws.on('message', (data) => {
-    const msg = JSON.parse(data.toString());
-
-    // Mensagem de identificação
-    if (msg.type === 'join') {
-      ws.username = msg.username;
-
-      // Aviso para todos
-      wss.clients.forEach((client) => {
-        if (client.readyState === ws.OPEN) {
-          client.send(
-            JSON.stringify({
-              type: 'system',
-              text: `${ws.username} entrou no chat`
-            })
-          );
-        }
-      });
-
-      return;
-    }
-
-    // Mensagem normal de chat
-    if (msg.type === 'chat') {
-      wss.clients.forEach((client) => {
-        if (client.readyState === ws.OPEN) {
-          client.send(
-            JSON.stringify({
-              type: 'chat',
-              username: ws.username,
-              text: msg.text
-            })
-          );
-        }
-      });
-    }
-  });
-
-  ws.on('close', () => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === ws.OPEN) {
-        client.send(
-          JSON.stringify({
-            type: 'system',
-            text: `${ws.username} saiu do chat`
-          })
-        );
-      }
-    });
-  });
-});
-
-
 //Teste de conexão com o banco:
 async function testDbConnection() {
     try {
@@ -121,7 +55,7 @@ async function testDbConnection() {
 }
 
 testDbConnection().then(() => {
-    server.listen(port, () => {
+    app.listen(port, () => {
         console.log('Servidor rodando na porta: ', port);
     });
 });
