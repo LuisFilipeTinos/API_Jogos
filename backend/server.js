@@ -4,6 +4,7 @@ import { database } from './config/db.js';
 import jogosRoutes from "./routes/jogosRoutes.js";
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const port = process.env.PORT;
 
 //middleware do Express.js que analisa requisições HTTP com corpos de dados em formato JSON, transformando a string JSON recebida em um objeto JavaScript acessível via req.body
 app.use(express.json());
+
+//Qualquer origem pode obter a resposta deste servidor.
+app.use(cors());
 
 //Definição do meu prefixo de rota:
 app.use('/api/jogos', jogosRoutes);
